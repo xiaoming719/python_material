@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar 16 18:10:43 2018
+@author: test
+"""
+
+"""
+#######################通过找到父节点然后删除子节点#######################
+import os 
+import xml.etree.ElementTree as ET  
+       
+print (os.getcwd())
+kml_file = list()
+for filename in os.listdir():
+    if os.path.splitext(filename)[1] == ".kml":
+        kml_file.append(filename)
+tree = ET.parse(kml_file[0])
+nodelist = tree.findall('./Document/Folder/Placemark')
+for parent_node in nodelist:  
+        children = parent_node.getchildren()  
+        for child in children:
+            if (child.tag == 'description' or child.tag == 'name'):
+                parent_node.remove(child) 
+kml_out_filename = os.path.splitext(kml_file[0])[0]  
+print (kml_out_filename)            
+tree.write("%s_1.kml" %kml_out_filename)
+
+#######################通过找到所有节点然后删除节点文本#######################
+import xml.etree.ElementTree as ET
+
+tree = ET.parse("Floor.kml")
+nodelist = tree.findall("./Document/Folder/Placemark/")
+
+for node in nodelist:
+    node.text = " "
+
+tree.write('result.kml', encoding='utf-8')
+#######################删除指定节点的属性#######################
+import xml.etree.ElementTree as ET 
+
+kv_map =["name",]
+
+tree = ET.parse("test.kml")
+nodelist = tree.findall('./processers')
+for node in nodelist:  
+        for key in kv_map:  
+            if key in node.attrib:  
+                del node.attrib[key]             
+                
+tree.write('result.kml', encoding='utf-8')
+#######################svg版本测试#######################
+#ET.register_namespace("","http://www.w3.org/2000/svg") 
+import xml.etree.ElementTree as ET 
+
+kv_map =["xmlns:xsd","xmlns:gx","xmlns:atom","xmlns"]
+
+tree = ET.parse("Floor.kml")
+nodelist = tree.getroot()
+for key in kv_map:  
+    if key in nodelist.attrib:  
+        del nodelist.attrib[key]     
+              
+tree.write('result.kml', encoding='utf-8')
+"""
+    
+
+

@@ -1,0 +1,49 @@
+#!/usr/bin/python  
+# coding:utf8  
+'''
+多线程和queue配合使用，实现多线程相互通信的例子 
+Python3
+Spyder Editor:xiaoming
+time:2018.3.9/12.54
+describe:This is a queue_test_1 script file.
+Website:https://jingyan.baidu.com/album/915fc414bc63bc51394b20fb.html?picindex=1
+''' 
+from queue import Queue
+from threading import Thread
+import time
+
+_sentinel = object()
+
+def producer(out_q):
+    n=0
+    while True:
+        n += 1
+        time.sleep(1)
+        print ("producer:",n)
+        out_q.put(n)
+        if n >=5:
+            out_q.put(n)
+            break
+    print ("producer done")
+    
+def consumer(in_q):
+    while True:
+        data = in_q.get()
+        if data is _sentinel:
+            in_q.put(_sentinel)
+            break
+        else:
+            print("consumer:",data)
+    print("consumer done")
+
+q = Queue()
+
+if __name__=="__main__":
+    t1 = Thread(target=consumer,args=(q,))
+    t2 = Thread(target=producer,args=(q,))
+    t1.start()
+    t2.start()
+
+
+
+

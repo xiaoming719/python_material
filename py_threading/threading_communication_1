@@ -1,0 +1,46 @@
+#!/usr/bin/python  
+# coding:utf8  
+'''
+多线程和queue配合使用，实现子线程和主线程相互通信的例子 
+Python3
+Spyder Editor:xiaoming
+time:2018.3.8/23.10
+describe:This is a threading_test_1 script file.
+Website:http://blog.csdn.net/yifei325325/article/details/73497851
+'''  
+
+import threading   
+import queue  
+import time  
+import random  
+  
+q = queue.Queue()  
+  
+  
+class MyThread(threading.Thread):  
+    def __init__(self, q, t, j):  
+        super(MyThread, self).__init__()  
+        self.q = q  
+        self.t = t  
+        self.j = j  
+  
+    def run(self):  
+        time.sleep(self.j)  
+        self.q.put(u"我是第%d个线程，我睡眠了%d秒,当前时间是%s" % (self.t, self.j, time.ctime()))  
+  
+count = 0  
+threads = []  
+for i in range(15):  
+    j = random.randint(1, 8)  
+    threads.append(MyThread(q, i, j))  
+for mt in threads:  
+    mt.start()  
+print ("start time: ", time.ctime())  
+while True:  
+    if not q.empty():  
+        print (q.get())  
+        count += 1  
+    if count == 15:  
+        break  
+        
+        
